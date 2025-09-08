@@ -7,9 +7,11 @@ https://ahmad-anggara41-sadjiwsportinggoods.pbp.cs.ui.ac.id/
 2. Clone repositori yang telah dibuat ke local
 3. Menyiapakan virtual environment dengan cara membuka direktori proyek lalu membuka cmd dan menuliskan sebagai berikut:
    ```
+   
    python -m venv env
 
 4. Menyalakan virtual environment untuk mengisolasi package dan dependencies dengan menulis kode berikut di cmd
    ```
+   
    env\Scripts\activate
 

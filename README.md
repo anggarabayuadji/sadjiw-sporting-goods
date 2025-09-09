@@ -170,8 +170,9 @@ Saat user mengirimkan request ke server, Django akan memeriksa urls.py untuk men
 **3. Bagaimana cara kerja migrasi database di Django?**
 Saat developer melakukan perubahan pada model di `models.py`, Django menggunakan perintah `makemigration` untuk membuat file yang berisi instruksi perubahan. SEtelah itu, perlu diikuti dengan perintah `migrate` agar Django dapat mengeksekusi instruksi tersebut ke database sehingga developer tidak perlu menulis SQL secara manual
 
-**Menurut Anda, dari semua framework yang ada, mengapa framework Django dijadikan permulaan pembelajaran pengembangan perangkat lunak?**
+**4. Menurut Anda, dari semua framework yang ada, mengapa framework Django dijadikan permulaan pembelajaran pengembangan perangkat lunak?**
+
 Menurut saya, framework Django digunakan karena yang pertama adalah penggunaan bahasa pemrogramannya yaoti Python. Hal itu dikarenakan python lebih mudah untuk dibaca secara langsung dibandingkan bahasa lainnya. Kedua, Django sudah memiliki banyak dokumentasi yang bertebaran di internet, sehingga untuk memelajarinya juga jauh lebih mudah. Ketiga, Django memiliki struktur yang jelas, termasuk menggunakan pola MTV sehingga membantu kami sebagai pemula punya gambaran alur yang digunakan. 
 
-**Apakah ada feedback untuk asisten dosen tutorial 1 yang telah kamu kerjakan sebelumnya?**
+**5. Apakah ada feedback untuk asisten dosen tutorial 1 yang telah kamu kerjakan sebelumnya?**
 Dari saya pribadi tidak ada, pengadaan tutorial sudah sangat baik dan asdos sudah sangat membantu dan selalu menangani sebuah masalah yang dihadapi dengan cepat. Semangat terus ya asdos untuk mengahadapi kita hehe

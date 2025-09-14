@@ -1,6 +1,53 @@
-<h1>Sadjiw Sporting Goods</h1>
+{% extends 'base.html' %}
+{% block content %}
+<h1> Sadjiw Sporting Goods </h1>
 
-<h5>Name: <h5>
-<p>{{ name }}<p>
+<h5>NPM: </h5>
+<p>{{ npm }}</p>
+
+<h5>Name: </h5>
+<p>{{ name }}</p>
+
 <h5>Class: </h5>
 <p>{{ class }}</p>
+
+<a href="{% url 'main:create_product' %}">
+  <button>+ Add Product</button>
+</a>
+
+<hr>
+
+{% if not product_list %}
+<p>Belum ada data produk di Sadjiw Sporting Goods</p>
+{% else %}
+
+{% for product in product_list %}
+<div>
+    <h2><a href="{% url 'main:show_product' product.name %}">{{ product.name }}</a></h2>
+
+    <p>
+    <b>{{ product.category }}</b>
+    {% if product.is_featured %} | <b>Featured</b>{% endif %}
+    | Brand: {{ product.brand }}
+    | Rating: {{ product.rating }}
+    | Price: {{ product.price }}
+    </p>
+
+    {% if product.thumbnail %}
+    <img src="{{ product.thumbnail }}" alt="thumbnail" width="150" height="100">
+    <br />
+    {% endif %}
+
+    <p>{{ product.description|truncatewords:25 }}...</p>
+
+    <p><a href="{% url 'main:show_product' product.name %}"><button>Detail</button></a></p>
+</div>
+
+<hr>
+{% endfor %}
+
+{% endif %}
+
+{% endblock content %}
+
+

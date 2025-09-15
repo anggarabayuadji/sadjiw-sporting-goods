@@ -208,6 +208,134 @@ Langkah-langkah pengerjaan:
 
 1. Membuat fungsi di `views.py` untuk menampilkan JSON dan XML dan menambahkan try except
    ```python
+   def show_xml(request):
+       product_list = Product.objects.all()
+       product_data = serializers.serialize("xml", product_list)
+       return HttpResponse(product_data, content_type="application/xml")
+
+   def show_json(request):
+       product_list = Product.objects.all()
+       product_data = serializers.serialize("json", product_list)
+       return HttpResponse(product_data, content_type="application/json")
+      
+   def show_xml_by_id(request, name):
+    try:
+        product_list = Product.objects.filter(pk=name)
+        product_data = serializers.serialize("xml", product_list)
+        return HttpResponse(product_data, content_type="application/xml")
+    except Product.DoesNotExist:
+        return HttpResponse(status=404)
+   
+   def show_json_by_id(request, name):
+    try:
+        product_list = Product.objects.filter(pk=name)
+        product_data = serializers.serialize("json", product_list)
+        return HttpResponse(product_data, content_type="application/json")
+    except Product.DoesNotExist:
+        return HttpResponse(status=404)
+   ```
+
+2. Menambahkan URL ke `urls.py` yang berada di direktori `main` untuk menyesuaikan masing-masing fungsi baru di `views.py`
+   ```python
+   urlpatterns = [
+      ...
+      path('json/<str:name>/', show_json_by_id, name='show_json_by_id'),
+      path('xml/<str:name>/', show_xml_by_id, name='show_xml_by_id'),
+       
+   ]
+
+3. Membuat fungsi `create_product` untuk menambahkan produk dan `show_product` untuk menampilkan detail produk di `views.py`
+   ```python
+   def create_product(request):
+       form = ProductForm(request.POST or None)
+       
+       if form.is_valid() and request.method == "POST":
+           form.save()
+           return redirect('main:show_main')
+       
+       context = {'form' : form}
+       return render(request, "create_product.html", context)
+   
+   def show_product(request, name):
+       product = get_object_or_404(Product, pk=name)
+       
+       context = {
+           'product' : product
+       }
+       
+       return render(request, "product_detail.html", context)
+   ```
+   
+4. Melakukan perubahan `main.html` yang berada di direktori `main` dengan menambahkan add button
+   ```python
+   <a href="{% url 'main:create_product' %}">
+     <button>+ Add Product</button>
+   </a>
+   ```
+
+5. Mengimplementasikan `main.html` yang berada di direktori `main` dengan database
+   ```python
+   <hr>
+
+   {% if not product_list %}
+   <p>Belum ada data produk di Sadjiw Sporting Goods</p>
+   {% else %}
+   
+   {% for product in product_list %}
+   <div>
+       <h2><a href="{% url 'main:show_product' product.name %}">{{ product.name }}</a></h2>
+      
+          <p>
+          <b>{{ product.category }}</b>
+          {% if product.is_featured %} | <b>Featured</b>{% endif %}
+          | Brand: {{ product.brand }}
+          | Rating: {{ product.rating }}
+          | Price: {{ product.price }}
+          </p>
+      
+          {% if product.thumbnail %}
+          <img src="{{ product.thumbnail }}" alt="thumbnail" width="150" height="100">
+          <br />
+          {% endif %}
+      
+          <p>{{ product.description|truncatewords:25 }}...</p>
+      
+          <p><a href="{% url 'main:show_product' product.name %}"><button>Detail</button></a></p>
+      </div>
+      
+      <hr>
+      ```
+6. Membuat `forms.py` yang digunakan untuk menambahkan data baru sebuah produk
+   ```python
+   from django.forms import ModelForm
+   from main.models import Product
+   
+   class ProductForm(ModelForm):
+       class Meta:
+           model = Product
+           fields = ["name", "price", "description", "thumbnail", "category", "is_featured", "brand", "rating"]
+   ```
+   
+8. Melakukan desain tampilan untuk `show_product` dan `create_product` dengan membuat template baru dengan nama `create_product.html` dan `product_detail.html`
+
+9. Melakukan routing unntuk laman `create_product` dan `show_product`
+   ```python
+   urlpatterns = [
+       ...
+       path('create-product/', create_product, name='create_product'),
+       path('product/<str:name>/', show_product, name='show_product'),      
+   ]
+   ```
+
+10. Melakukan test server di localhost dengan melakukan:
+    ```bash
+    python manage.py runserver
+    ''' 
+
+   
+
+
+     
    
    
    

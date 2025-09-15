@@ -60,3 +60,6 @@ def show_json_by_id(request, name):
         return HttpResponse(product_data, content_type="application/json")
     except Product.DoesNotExist:
         return HttpResponse(status=404)
+    
+def test(requets): # tes rebuild
+    return requets

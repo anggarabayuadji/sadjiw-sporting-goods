@@ -31,7 +31,11 @@ SECRET_KEY = 'django-insecure-zcj!6af^&u2g=1(met-ok32!wi4@4j5ulqiq3vyi8m)y@9i!5)
 PRODUCTION = os.getenv('PRODUCTION', 'False').lower() == 'true'
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "ahmad-anggara41-sadjiwsportinggoods.pbp.cs.ui.ac.id"]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://ahmad-anggara41-sadjiwsportinggoods.pbp.cs.ui.ac.id"
+]
 
 
 # Application definition
@@ -43,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'main'
 ]
 
 MIDDLEWARE = [
@@ -60,7 +65,7 @@ ROOT_URLCONF = 'sadjiw_sporting_goods.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

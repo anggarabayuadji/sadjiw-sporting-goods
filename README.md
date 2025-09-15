@@ -3,6 +3,8 @@ Tugas Individu Pemrograman Berbasis Platform
 
 oleh Ahmad Anggara Bayuadji Prawirosenoto - PBP A - 2406495514 - https://ahmad-anggara41-sadjiwsportinggoods.pbp.cs.ui.ac.id/
 
+## Tugas 2
+
 Langkah-langkah pembuatan:
 
 1. Membuat repositori baru di Github
@@ -154,6 +156,7 @@ Langkah-langkah pembuatan:
     git push pws master
 25. Cek keberhasilan web dengan membuka link [ini](https://ahmad-anggara41-sadjiwsportinggoods.pbp.cs.ui.ac.id/)
 
+---
 
 Pertanyaan:
 
@@ -178,3 +181,33 @@ Menurut saya, framework Django digunakan karena yang pertama adalah penggunaan b
 **5. Apakah ada feedback untuk asisten dosen tutorial 1 yang telah kamu kerjakan sebelumnya?**
 
 Dari saya pribadi tidak ada, pengadaan tutorial sudah sangat baik dan asdos sudah sangat membantu dan selalu menangani sebuah masalah yang dihadapi dengan cepat. Semangat terus ya asdos untuk mengahadapi kita hehe
+
+## Tugas 3
+
+Pertanyaan:
+
+**1. Jelaskan mengapa kita memerlukan data delivery dalam pengimplementasian sebuah platform?**
+
+   Data delivery diperlukan untuk komunikasi antara client dan server. Data delivery memungkinkan untuk mengambil informasi dari server untuk ditampilkan ke user atau kebalikannya. Tanpa data delivery, platform tidak akan menjadi aplikasi interaktif
+
+**2. Menurutmu, mana yang lebih baik antara XML dan JSON? Mengapa JSON lebih populer dibandingkan XML?**
+
+   Menurut saya JSON lebih baik karena lebih serderhana dan dari segi prosesnya juga lebih mudah diolah oleh komputer dibandingkan XML. JSON penulisannya biasanya lebih singkat dan bisa membuat array. Hal yang paling membedakan antara JSON dan XML adalah XML haru diparse menggunkan XML parser, sedangkan JSON bisa langsung menggunakan function JavaScript standar
+
+**3. Jelaskan fungsi dari method `is_valid()` pada form Django dan mengapa kita membutuhkan method tersebut?**
+
+   fungsi `is_valid()` di Django ini pada dasarnya adalah untuk memvalidasi sebuah data. Selain memvalidasi data, fungsi `is_valid()` ini juga membersihkan data juga dengan mengubah string-string yang terdapat di dalamnya ke data object yang bertepatan. Misalnya adalah kita terdapat string tanggal '24-05-2016', itu akan diubah menjadi object datatime dan akan mencoba semua formatnya. Konveri tersebut tidak hanya berlaku untuk tanggal, tetapi juga untuk object-object lainnya
+
+**4. Mengapa kita membutuhkan `csrf_token` saat membuat form di Django? Apa yang dapat terjadi jika kita tidak menambahkan `csrf_token` pada form Django? Bagaimana hal tersebut dapat dimanfaatkan oleh penyerang?**
+
+`csrf_token` perlu digunakan untuk melindungi user dari serangan Cross Site Request Forgery. Jika tidak menggunakan `csrf_token`, ketika kita masuk ke dalam website yang sekiranya berbahaya, penyerang bisa saja mengirimkan request palsu yang mengatasnamakan user. Dampaknya tentunya bisa sangat fatal karena bisa berkaitan dengan pencurian data ataupun pembuatan transaksi palsu. Dengan menggunakan `csrf_token` hal tersebut bisa dihindarkan karena server di website yang asli akan menambahkan token terlebih dahulu yang digitnya besar dan hampir tidak mungkin bisa ditebak.
+
+--- 
+
+Langkah-langkah pengerjaan:
+
+1. Membuat fungsi di `views.py` untuk menampilkan JSON dan XML dan menambahkan try except
+   ```python
+   
+   
+   

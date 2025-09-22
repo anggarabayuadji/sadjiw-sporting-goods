@@ -168,15 +168,19 @@ Tutorial
 Pertanyaan
 ---
 **1. Apa itu Django `AuthenticationForm`? Jelaskan juga kelebihan dan kekurangannya.**
-   `AuthenticationForm` adalah class bawaan yang dapat mengecek apakah username dan password sudah cocok di database. Jika berhasil akan diteruskan untuk dibuatkan menjadi objek user. Keuntungannya adalah kita tidak perlu membuat fungsi autentikasi dari awal sehingga lebih praktis dan menghemat waktu. Namun, kekurangannya adalah tidak fleksibel dalam penggunaan variasi untuk login (misalnya dengan email) atau secara tampilan yang terlalu sederhana (perlu modifikasi lebih lanjut).
+
+`AuthenticationForm` adalah class bawaan yang dapat mengecek apakah username dan password sudah cocok di database. Jika berhasil akan diteruskan untuk dibuatkan menjadi objek user. Keuntungannya adalah kita tidak perlu membuat fungsi autentikasi dari awal sehingga lebih praktis dan menghemat waktu. Namun, kekurangannya adalah tidak fleksibel dalam penggunaan variasi untuk login (misalnya dengan email) atau secara tampilan yang terlalu sederhana (perlu modifikasi lebih lanjut).
 
 **2. Apa perbedaan antara autentikasi dan otorisasi? Bagaimana Django mengimplementasikan kedua konsep tersebut?**
-   Perbedaannya adalah autentikasi lebih ke mencocokan data, misalnya mengecek apakah username dan password yang dimasukkan user sudah cocok. Sedangkan otorisasi memainkan peran dalam memberikan hak akses atau permission. Implementasi Django untuk kedua konsep tersebut pada konteks tugas ini adalah sebelum seorang user bisa mengakses websitenya perlu melakukan login, setelah itu oleh Django akan diautentikasi usernamenya dan passwordnya apakah sudah cocok, setelah itu oleh Django dilakukan pemberian otorisasi atau hak akses terhadap website.
+
+Perbedaannya adalah autentikasi lebih ke mencocokan data, misalnya mengecek apakah username dan password yang dimasukkan user sudah cocok. Sedangkan otorisasi memainkan peran dalam memberikan hak akses atau permission. Implementasi Django untuk kedua konsep tersebut pada konteks tugas ini adalah sebelum seorang user bisa mengakses websitenya perlu melakukan login, setelah itu oleh Django akan diautentikasi usernamenya dan passwordnya apakah sudah cocok, setelah itu oleh Django dilakukan pemberian otorisasi atau hak akses terhadap website.
 
 **3. Apa saja kelebihan dan kekurangan _session_ dan _cookies_ dalam konteks menyimpan state di aplikasi web?**
+
 Kelebihan cookies adalah mudah digunakan untuk menyimpan data sederhana di sisi browser. Namun, kekurangannya adalah cookies kurang aman karena bisa diubah langsung oleh user, juga ukurannya terbatas sekitar 4KB. Sedangkan session memiliki kelebihan dalam hal keamanan karena data sensitif disimpan di server bukan di browser, sehingga lebih sulit dimanipulasi oleh user. Selain itu session juga bisa menyimpan data yang lebih kompleks. Kekurangannya adalah session membutuhkan storage di server sehingga semakin banyak user yang aktif semakin berat pula beban server. 
 
 **4. Apakah penggunaan _cookies_ aman secara _default_ dalam pengembangan web, atau apakah ada risiko potensial yang harus diwaspadai? Bagaimana Django menangani hal tersebut?**
+
 Penggunaan cookies kurang aman karena pada dasarnya cookies disimpan langsung di browser. Hal itu menimbulkan risiko cookies tersebut bisa dimanipulasi oleh user secara langsung. Sehingga data yang ditampilan bisa saja tidak valid atau bahkan bisa dipakai untuk serangan XSS oleh pihak tidak bertanggung jawab. Django menanganinya dengna menyediakan fitur-fitur yang bisa memproteksi dari serangan seperti penggunaan secure cookies `CSRF_COOKIE_SECURE_` dan `SESSION_COOKIE_SECURE`.
 
 

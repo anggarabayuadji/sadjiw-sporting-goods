@@ -2,55 +2,56 @@
 {% load static %}
 
 {% block meta %}
- <title>Edit Product - Sadjiw Sporting Goods</title>
+<title>Create Product - Sadjiw Sporting Goods</title>
 {% endblock meta %}
 
 {% block content %}
-<div class="bg-[#F3EFEA] w-full min-h-screen">
- <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-
-  <div class="mb-6">
-   <a href="{% url 'main:show_main' %}" class="text-[#7A736A] hover:text-[#2C2C2C] font-medium transition-colors">
-    ← Back to Product
-   </a>
-  </div>
-
-  <div class="bg-[#FDFBF7] rounded-lg border border-[#D6CFC7] p-6 sm:p-8 form-style">
-   <div class="mb-8">
-    <h1 class="text-2xl font-bold text-[#2C2C2C] mb-2">Edit Product</h1>
-    <p class="text-[#7A736A]">Update your football Product and stories</p>
-   </div>
-
-   <form method="POST" class="space-y-6">
-    {% csrf_token %}
-    {% for field in form %}
-     <div>
-      <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-[#2C2C2C] mb-2">
-       {{ field.label }}
-      </label>
-      <div class="w-full">
-       {{ field }}
-      </div>
-      {% if field.help_text %}
-       <p class="mt-1 text-sm text-[#7A736A]">{{ field.help_text }}</p>
-      {% endif %}
-      {% for error in field.errors %}
-       <p class="mt-1 text-sm text-red-600">{{ error }}</p>
-      {% endfor %}
-     </div>
-    {% endfor %}
-
-    <div class="flex flex-col sm:flex-row gap-4 pt-6 border-t border-[#D6CFC7]">
-     <a href="{% url 'main:show_main' %}" class="order-2 sm:order-1 px-6 py-3 border border-[#D6CFC7] text-[#2C2C2C] rounded-md font-medium hover:bg-[#E8E1DA] transition-colors text-center">
-      Cancel
-     </a>
-
-     <button type="submit" class="order-1 sm:order-2 flex-1 bg-[#D6CFC7] text-[#2C2C2C] px-6 py-3 rounded-md font-medium hover:bg-[#C6BFB5] transition-colors">
-      Update Product
-     </button>
+<div class="bg-[#F3EFEA] w-full min-h-screen"> 
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <div class="mb-6">
+            <a href="{% url 'main:show_main' %}" class="text-[#7A736A] hover:text-[#2C2C2C] font-medium transition-colors">
+                ← Back to Product
+            </a>
+        </div>
+        
+        <div class="bg-[#FDFBF7] rounded-lg border border-[#D6CFC7] p-6 sm:p-8 form-style">
+            <div class="mb-8">
+                <h1 class="text-2xl font-bold text-[#2C2C2C] mb-2">Create New Product</h1>
+                <p class="text-[#7A736A]">Share your football product with the community</p>
+            </div>
+            
+            <form method="POST" class="space-y-6">
+                {% csrf_token %}
+                {% for field in form %}
+                <div>
+                    <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-[#2C2C2C] mb-2">
+                        {{ field.label }}
+                    </label>
+                    <div class="w-full">
+                        {{ field }}
+                    </div>
+                    {% if field.help_text %}
+                        <p class="mt-1 text-sm text-[#7A736A]">{{ field.help_text }}</p>
+                    {% endif %}
+                    {% for error in field.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+                
+                <div class="flex flex-col sm:flex-row gap-4 pt-6 border-t border-[#D6CFC7]">
+                    
+                    <a href="{% url 'main:show_main' %}" class="order-2 sm:order-1 px-6 py-3 border border-[#D6CFC7] text-[#2C2C2C] rounded-md font-medium hover:bg-[#E8E1DA] transition-colors text-center">
+                        Cancel
+                    </a>
+                    
+                    <button type="submit" class="order-1 sm:order-2 flex-1 bg-[#D6CFC7] text-[#2C2C2C] px-6 py-3 rounded-md font-medium hover:bg-[#C6BFB5] transition-colors">
+                        Publish Product
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
-   </form>
-  </div>
- </div>
 </div>
 {% endblock %}

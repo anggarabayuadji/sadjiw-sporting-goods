@@ -2,9 +2,7 @@
 Ahmad Anggara Bayuadji Prawirosoenoto - 2406495514 - PBP A
 https://ahmad-anggara41-sadjiwsportinggoods.pbp.cs.ui.ac.id/
 
-## Tugas 4
-Tutorial
----
+## Tugas 4 (Tutorial)
 1. Mengimplementasikan registrasi dengan menambahkan import sebagai berikut di `views.py` di direktori `main`
    ```python
     from django.contrib.auth.forms import UserCreationForm
@@ -165,7 +163,7 @@ Tutorial
     python manage.py runserver
     ```
 
-Pertanyaan
+Tugas 4 (Pertanyaan)
 ---
 **1. Apa itu Django `AuthenticationForm`? Jelaskan juga kelebihan dan kekurangannya.**
 
@@ -184,7 +182,161 @@ Kelebihan cookies adalah mudah digunakan untuk menyimpan data sederhana di sisi 
 Penggunaan cookies kurang aman karena pada dasarnya cookies disimpan langsung di browser. Hal itu menimbulkan risiko cookies tersebut bisa dimanipulasi oleh user secara langsung. Sehingga data yang ditampilan bisa saja tidak valid atau bahkan bisa dipakai untuk serangan XSS oleh pihak tidak bertanggung jawab. Django menanganinya dengna menyediakan fitur-fitur yang bisa memproteksi dari serangan seperti penggunaan secure cookies `CSRF_COOKIE_SECURE_` dan `SESSION_COOKIE_SECURE`.
 
 
+## Tugas 5 (Tutorial)
 
+1. Membuat direktori `static\css` dan menambahkan file `global.css`
+   ```css
+   .form-style form input, form textarea, form select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 2px solid #bcbcbc;
+    border-radius: 0.375rem;
+   }
+   .form-style form input:focus, form textarea:focus, form select:focus {
+       outline: none;
+       border-color: #16a34a;
+       box-shadow: 0 0 0 3px #16a34a;
+   }
+   
+   .form-style input[type="checkbox"] {
+       width: 1.25rem;
+       height: 1.25rem;
+       padding: 0;
+       border: 2px solid #d1d5db;
+       border-radius: 0.375rem;
+       background-color: white;
+       cursor: pointer;
+       position: relative;
+       appearance: none;
+       -webkit-appearance: none;
+       -moz-appearance: none;
+   }
+   
+   .form-style input[type="checkbox"]:checked {
+       background-color: #16a34a;
+       border-color: #16a34a;
+   }
+   
+   .form-style input[type="checkbox"]:checked::after {
+       content: '✓';
+       position: absolute;
+       top: 50%;
+       left: 50%;
+       transform: translate(-50%, -50%);
+       color: white;
+       font-weight: bold;
+       font-size: 0.875rem;
+   }
+   
+   .form-style input[type="checkbox"]:focus {
+       outline: none;
+       border-color: #16a34a;
+       box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+   }
+   ```
+2. Menkoneksikan tailwind ke aplikasi dengan mengubah isi dari `base.html` di `root/templates`
+   ```html
+   {% load static %}
+   <!DOCTYPE html>
+   <html lang="en">
+     <head>
+       <meta charset="UTF-8" />
+       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+       {% block meta %} {% endblock meta %}
+       <script src="https://cdn.tailwindcss.com"></script>
+       <link rel="stylesheet" href="{% static 'css/global.css' %}"/>
+     </head>
+     <body>
+       {% block content %} {% endblock content %}
+     </body>
+   </html>
+   ```
+
+3. Menambahkan fitur baru yaitu `edit_product` di `views.py` di direktori `main`
+   ```python
+   def edit_product(request, name):
+       news = get_object_or_404(Product, pk=name)
+       form = ProductForm(request.POST or None, instance=news)
+       if form.is_valid() and request.method == 'POST':
+           form.save()
+           return redirect('main:show_main')
+   
+       context = {
+           'form': form
+       }
+   
+       return render(request, "edit_product.html", context)
+   ```
+4. Menambahkan file `edit_product.html` di `main/templates` dan melakukan styling sesuai kebutuhan
+
+5. Menambahkan fitur baru yaitu `delete_product` di `views.py` di direktori `main`
+   ```python
+   def delete_product(request, name):
+       product = get_object_or_404(Product, pk=name)
+       product.delete()
+       return HttpResponseRedirect(reverse('main:show_main'))
+   ```
+6. Memasukkan path kedua fitur baru ke `urls.py` di direktori `main`
+   ```python
+   urlpatterns = [
+       ...
+       path('news/<str:name>/edit', edit_product, name='edit_product'),
+       path('news/<str:name>/delete', delete_product, name='delete_product'),
+   ]
+
+7. Membuat navbar dengan menambahkan `navbar.html` di `templates` di direktori root sekaligus emmbuat styling
+
+8. Melakukan styling ke semua html yang sudah dibuat sebelumnya (`create_product.html`, `login.html`, `main.html`, `product_detail.html` dan `register.html`) dan juga menambahkan html baru yaitu `card_product.html` untuk membuat card yang digunakan untuk menampilkan product
+   
+9. Tidak lupa untuk mengkonfigurasikan statiic files pada aplikasi dengan menambahkan di `settings.py` sebagai berikut:
+```python
+   ...
+   MIDDLEWARE = [
+       'django.middleware.security.SecurityMiddleware',
+       'whitenoise.middleware.WhiteNoiseMiddleware', #Tambahkan tepat di bawah SecurityMiddleware
+       ...
+   ]
+   ...
+
+   ...
+   STATIC_URL = '/static/'
+   if DEBUG:
+       STATICFILES_DIRS = [
+           BASE_DIR / 'static' # merujuk ke /static root project pada mode development
+       ]
+   else:
+       STATIC_ROOT = BASE_DIR / 'static' # merujuk ke /static root project pada mode production
+   ...
+   ```
+
+## Tugas 5 (Pertanyaan)
+**1. Jika terdapat beberapa CSS selector untuk suatu elemen HTML, jelaskan urutan prioritas pengambilan CSS selector tersebut!**
+
+CSS selector ditentukan dengan konsep yang bernama spesifitas dimana semakin spesifik suatu selektor maka semakin tingga prioritasnya ketika digunakan ke elemen yang sama
+
+| Selector | Example | Description | Weight |
+|----------|---------|-------------|--------|
+| Inline styles | `<h1 style="color: pink;">` | Highest priority, will override all other selectors | - |
+| Id selectors | `#navbar` | Second highest priority | 1-0-0 |
+| Classes, attribute selectors and pseudo-classes | `.test`, `[type="text"]`, `:hover` | Third highest priority | 0-1-0 |
+| Elements and pseudo-elements | `h1`, `::before`, `::after` | Low priority | 0-0-1 |
+| Universal selector and `:where()` | `*`, `:where()` | No priority | 0-0-0 |
+
+**2. Mengapa responsive design menjadi konsep yang penting dalam pengembangan aplikasi web? Berikan contoh aplikasi yang sudah dan belum menerapkan responsive design, serta jelaskan mengapa!**
+
+Responsive design sangat penting karena membuat tampilan dan layout suatu aplikasi menjadi lebih dinamis dan tidak bergantung pada device (tidak statis). Sehingga jika dibuka dengan device lain tampilan aplikasi bisa menyesuaikan. Sedangkan jika tidak menerapkan responsive design, maka user bisa saja perlu menavigasi seperti zoom in zoom out hanya untuk mengakses sebuah fitur. Hal itu mengakibatkan pengalaman user menjadi tidak halus dan bisa saja malah meninggalkan aplikasi tersebut.
+
+**3. Jelaskan perbedaan antara margin, border, dan padding, serta cara untuk mengimplementasikan ketiga hal tersebut!**
+
+Secara umum, margin, border, dan padding bisa dikatakan sebagai pengatur ruangan di sekitar elemen. Margin merupakan ruang di luar border yang memisahkan elemen dari elemen lain, border merupakan garis tepi elemen yang berada di antara padding dan margin, dan padding adalah ruangan di dalam border yang memisahkan konten elemen dari tepi elemen. Jika digambarkan maka akan menghasilkan ruangan seperti ini:
+
+<img width="393" height="240" alt="image" src="https://github.com/user-attachments/assets/a7422ac3-9248-4ef7-be5a-146bf29bd620" />
+
+sumber: https://www.google.com/url?sa=i&url=https%3A%2F%2Fid.pinterest.com%2Fpin%2Fhow-are-margins-borders-padding-and-content-related-web-tutorials--426856870909031540%2F&psig=AOvVaw2CcrKDB2UaEfOCFg6E01Sf&ust=1759375310740000&source=images&cd=vfe&opi=89978449&ved=0CBgQjhxqFwoTCODq6_SFgpADFQAAAAAdAAAAABAE
+
+**4. Jelaskan konsep flex box dan grid layout beserta kegunaannya!**
+
+Flex box dan grid merupakan konsep untuk mengatur layout di CSS. Flex Box mengatur elemen satu dimensi, jadi hanya berupa baris ATAU kolom untuk mengatur jarak, posisi, atau ukuran suatu elemen. Contohnya adalah menu navigasi ataupun card. Sedangkan untuk grid, ia mengatur elemen secara dua dimensi jadi berupa baris DAN kolom. Contohnya adalah untuk pembuatan galeri ataupun dashboard.
 
    
    

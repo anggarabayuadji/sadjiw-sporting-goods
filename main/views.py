@@ -22,7 +22,7 @@ def show_main(request):
         product_list = Product.objects.filter(user=request.user)
 
     context = {
-        'npm': '240123456',
+        'npm': '2406495514',
         'name': request.user.username,
         'class': 'PBP A',
         'product_list': product_list,
@@ -103,7 +103,7 @@ def login_user(request):
             login(request, user)
             response = HttpResponseRedirect(reverse("main:show_main"))
             response.set_cookie('last_login', str(datetime.datetime.now()))
-        return response
+            return response
 
     else:
         form = AuthenticationForm(request)
@@ -115,4 +115,22 @@ def logout_user(request):
     response = HttpResponseRedirect(reverse('main:login'))
     response.delete_cookie('last_login')
     return response
+
+def edit_product(request, name):
+    news = get_object_or_404(Product, pk=name)
+    form = ProductForm(request.POST or None, instance=news)
+    if form.is_valid() and request.method == 'POST':
+        form.save()
+        return redirect('main:show_main')
+
+    context = {
+        'form': form
+    }
+
+    return render(request, "edit_product.html", context)
+
+def delete_product(request, name):
+    product = get_object_or_404(Product, pk=name)
+    product.delete()
+    return HttpResponseRedirect(reverse('main:show_main'))
 

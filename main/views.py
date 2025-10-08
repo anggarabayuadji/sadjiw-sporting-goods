@@ -137,6 +137,7 @@ def edit_product(request, name):
     form = ProductForm(request.POST or None, instance=product)
     if form.is_valid() and request.method == 'POST':
         form.save()
+        messages.success(request, f'Product "{product.name}" successfully updated.')
         return redirect('main:show_main')
 
     context = {
@@ -148,6 +149,7 @@ def edit_product(request, name):
 def delete_product(request, name):
     product = get_object_or_404(Product, pk=name)
     product.delete()
+    messages.warning(request, f'Product "{product.name}" has been deleted.')
     return HttpResponseRedirect(reverse('main:show_main'))
 
 

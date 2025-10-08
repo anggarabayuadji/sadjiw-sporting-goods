@@ -339,5 +339,368 @@ sumber: https://www.google.com/url?sa=i&url=https%3A%2F%2Fid.pinterest.com%2Fpin
 Flex box dan grid merupakan konsep untuk mengatur layout di CSS. Flex Box mengatur elemen satu dimensi, jadi hanya berupa baris ATAU kolom untuk mengatur jarak, posisi, atau ukuran suatu elemen. Contohnya adalah menu navigasi ataupun card. Sedangkan untuk grid, ia mengatur elemen secara dua dimensi jadi berupa baris DAN kolom. Contohnya adalah untuk pembuatan galeri ataupun dashboard.
 
    
+## Tugas 5 (Tutorial)
+1. Menambahkan file `toast.html` di direktori root dan mengisinya sebagai berikut untuk memunculkan bar notifikasi ketika melakukan delete, edit, logout, dan login.
+   ```html
+   <div id="toast-container" class="fixed top-5 right-5 z-[100] space-y-3">
+    </div>
+
+   <script>
+       function showToast(message, type = 'success') {
+           const container = document.getElementById('toast-container');
+           if (!container) return;
    
+           let bgColor, icon;
+           if (type.includes('success')) {
+               bgColor = 'bg-[#8B837A]';
+               icon = '✅';
+           } else if (type.includes('error')) {
+               bgColor = 'bg-red-600';
+               icon = '❌';
+           } else if (type.includes('warning')) {
+               bgColor = 'bg-yellow-600';
+               icon = '⚠️';
+           } else {
+               bgColor = 'bg-gray-700';
+               icon = '🔔';
+           }
    
+           const toast = document.createElement('div');
+           toast.className = `p-4 rounded-md shadow-lg text-white max-w-xs transition-all duration-300 transform translate-x-full opacity-0 ${bgColor}`;
+           toast.innerHTML = `<div class="flex items-center space-x-2"><span class="text-lg">${icon}</span><span class="font-medium text-sm">${message}</span></div>`;
+           container.appendChild(toast);
+   
+           // Show
+           setTimeout(() => {
+               toast.classList.remove('translate-x-full', 'opacity-0');
+               toast.classList.add('translate-x-0', 'opacity-100');
+           }, 10); 
+   
+           // Hide
+           setTimeout(() => {
+               toast.classList.remove('translate-x-0', 'opacity-100');
+               toast.classList.add('translate-x-full', 'opacity-0');
+               toast.addEventListener('transitionend', () => toast.remove());
+           }, 3000); 
+       }
+   
+       // --- Logic to process Django messages on page load ---
+       document.addEventListener('DOMContentLoaded', function() {
+           {% if messages %}
+               {% for message in messages %}
+                   // message.tags contains 'success', 'error', 'warning', etc.
+                   showToast('{{ message|safe }}', '{{ message.tags }}'); 
+               {% endfor %}
+           {% endif %}
+       });
+   </script>
+   ```
+
+2. Mengintegrasikan toast ke dalam `base.html` di direktori `templates` di root folder
+   ```html
+      ...
+   <body>
+       {% block content %}
+   
+       {% endblock %}
+   
+       {% include 'toast.html' %}
+   </body>
+   ...
+   ```
+
+3. Mengubah function `show_json()` untuk menampilkan data sekaligus melakukan perubahan di `main.html` di direktori `main`
+   ```python
+   def show_json(request):
+    try:
+        product_list = Product.objects.all()
+        data = [
+            {
+                'id': product.name,
+                'name': product.name,
+                'price': product.price,             
+                'description': product.description,
+                'category': product.category,
+                'thumbnail': product.thumbnail,
+                'is_featured': product.is_featured,
+                'brand': product.brand,
+                'rating': float(product.rating),    
+                'user_id': product.user_id,
+                'user_username': product.user.username if product.user_id else None
+            }
+            for product in product_list
+        ]
+
+        return JsonResponse(data, safe=False)
+    except Product.DoesNotExist:
+        return JsonResponse({'detail': 'Not found'}, status=404)
+    ```
+3. Melakukan perubahan function `show_json_by_id` yang sudah ada di `views.py` sebagai berikut dan melakukan update template `product_detail.html` di direktori `main/templates`
+   ```python
+   def show_json_by_id(request, name):
+    try:
+        product = get_object_or_404(Product, pk=name)
+        data = {
+            'id': product.name,
+            'name': product.name,
+            'price': product.price,
+            'description': product.description,
+            'thumbnail': product.thumbnail,
+            'category': product.category,
+            'is_featured': product.is_featured,
+            'brand': product.brand,
+            'rating': float(product.rating),
+            'user_id': product.user_id,
+            'user_username': product.user.username if product.user else 'Unknown Seller',
+        }
+
+        return JsonResponse(data)
+    
+    except Exception as e:
+        return JsonResponse({'detail': 'Product not found'}, status=404)
+   ```
+5. Menambahkan javaScript di `main.html` dan juga `product_detail.html`
+
+6. Membuat `modal.html` di direktori `templates` yang berada di root
+   ```python
+      <div id="crudModal" class="hidden fixed inset-0 z-50 w-full flex items-center justify-center bg-gray-800 bg-opacity-50">
+     <div id="crudModalContent" class="bg-white rounded-lg shadow-lg w-5/6 sm:w-3/5 md:w-1/2 lg:w-2/5 xl:w-1/3 max-h-screen overflow-y-auto">
+       <!-- Modal header -->
+       <div class="flex items-center justify-between p-4 border-b">
+         <div>
+           <h3 class="text-xl font-semibold text-gray-900">
+             Create New Product
+           </h3>
+           <p class="text-sm text-gray-600 mt-1">Share your sports product and stories with the community</p>
+         </div>
+         <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center" onclick="hideModal()">
+           <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+             <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+           </svg>
+           <span class="sr-only">Close modal</span>
+         </button>
+       </div>
+       <!-- Modal body -->
+       <div class="px-6 py-4 space-y-6 form-style">
+         <form id="productForm">
+           <div class="mb-4">
+             <label for="name" class="block text-sm font-medium text-gray-700">Product Name</label>
+             <input type="text" id="name" name="name" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Enter product name" required>
+           </div>
+           <div class="mb-4">
+             <label for="description" class="block text-sm font-medium text-gray-700">Content</label>
+             <textarea id="description" name="description" rows="3" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Enter product description" required></textarea>
+           </div>
+           <div class="mb-4">
+             <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
+             <select id="category" name="category" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2" required>
+               <option value="">Choose a category</option>
+               <option value="transfer">Tas</option>
+               <option value="update">Bola</option>
+               <option value="exclusive">Sepatu</option>
+               <option value="match">Baju</option>
+               <option value="rumor">General</option>
+             </select>
+           </div>
+   
+           <div class="mb-4">
+           <label for="price" class="block text-sm font-medium text-gray-700">Price</label>
+           <input type="number" id="price" name="price" step="0.01" min="0" 
+                   class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2" 
+                   placeholder="Enter product price" required>
+           </div>
+           
+           <div class="mb-4">
+             <label for="thumbnail" class="block text-sm font-medium text-gray-700">Thumbnail URL</label>
+             <input type="url" id="thumbnail" name="thumbnail" class="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2" placeholder="https://example.com/image.jpg">
+           </div>
+           <div class="mb-4">
+             <div class="flex items-center">
+               <input id="is_featured" name="is_featured" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded">
+               <label for="is_featured" class="ml-2 text-sm font-medium text-gray-900">Featured Product</label>
+             </div>
+           </div>
+         </form>
+       </div>
+       <!-- Modal footer -->
+       <div class="flex flex-col sm:flex-row gap-4 p-6 border-t border-gray-200 rounded-b">
+         <button type="button" id="cancelButton" class="order-2 sm:order-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-md font-medium hover:bg-gray-50 transition-colors text-center" onclick="hideModal()">Cancel</button>
+         <button type="submit" id="submitProduct" form="productForm" class="order-1 sm:order-2 flex-1 bg-green-600 text-white px-6 py-3 rounded-md font-medium hover:bg-green-700 transition-colors">Publish Product</button>
+       </div>
+     </div>
+   </div>
+   
+   <script>
+     function showModal() {
+         const modal = document.getElementById('crudModal');
+         const modalContent = document.getElementById('crudModalContent');
+   
+         modal.classList.remove('hidden'); 
+         setTimeout(() => {
+           modalContent.classList.remove('opacity-0', 'scale-95');
+           modalContent.classList.add('opacity-100', 'scale-100');
+         }, 50); 
+     }
+   
+     function hideModal() {
+         const modal = document.getElementById('crudModal');
+         const modalContent = document.getElementById('crudModalContent');
+   
+         modalContent.classList.remove('opacity-100', 'scale-100');
+         modalContent.classList.add('opacity-0', 'scale-95');
+   
+         setTimeout(() => {
+           modal.classList.add('hidden');
+         }, 150); 
+     }
+   
+       async function addProductEntry() {
+   
+           await fetch("{% url 'main:add_product_entry_ajax' %}", {
+           method: "POST",
+           body: new FormData(document.querySelector('#productForm')),
+           })
+   
+           document.getElementById("productForm").reset();
+           hideModal();
+           
+           // Show toast notification
+           showToast('Product added successfully!', '', 'success');
+   
+           // Dispatch custom event to notify main.html about new data
+           document.dispatchEvent(new CustomEvent('productAdded'));
+   
+           return false;
+       }
+   
+       document.getElementById("productForm").addEventListener("submit", function(e) {
+           e.preventDefault();
+           addProductEntry();
+       })
+   </script>
+   ```
+7. Menambahkan modal ke `base.html` ke `main.html`
+   ```html
+   ...
+   <body>
+       {% block content %}
+   
+       {% endblock %}
+   
+       {% include 'toast.html' %}
+       {% include 'modal.html' %}
+   </body>
+   ...
+   ```
+8. Menambahkan fungsi `add_product_entry_ajax(request)` untuk menangani request ajax di `views.py`
+   ```python
+   @csrf_exempt
+   @require_POST
+   def add_product_entry_ajax(request):
+       name = strip_tags(request.POST.get("name"))  
+       description = strip_tags(request.POST.get("description"))  
+       category = request.POST.get("category")
+       thumbnail = request.POST.get("thumbnail")
+       is_featured = request.POST.get("is_featured") == 'on'  
+       price = request.POST.get("price")
+       user = request.user
+   
+       new_product = Product(
+           name=name,
+           description=description,
+           category=category,
+           thumbnail=thumbnail,
+           is_featured=is_featured,
+           price=price,
+           user=user,  
+       )
+       new_product.save()
+   
+       return HttpResponse(b"CREATED", status=201)
+
+9. Tidak lupa untuk menambahkan URL pattern ke `main/urls.py`
+   ```python
+   urlpatterns = [
+    ...
+    path('create-product-ajax', add_product_entry_ajax, name='add_product_entry_ajax'),
+   ]
+   ```
+10. Menambahkan fungsi JavaScript untuk AJAX dengan mengedit `modal.html`
+    ```JavaScript
+     async function addProductEntry() {
+
+        await fetch("{% url 'main:add_product_entry_ajax' %}", {
+        method: "POST",
+        body: new FormData(document.querySelector('#productForm')),
+        })
+
+        document.getElementById("productForm").reset();
+        hideModal();
+        
+        // Show toast notification
+        showToast('Product added successfully!', '', 'success');
+
+        // Dispatch custom event to notify main.html about new data
+        document.dispatchEvent(new CustomEvent('productAdded'));
+
+        return false;
+    }
+    ```
+11. Menambahkan event listener untuk mendeteksi ketika ada produk baru
+    ```javascript
+       <script>
+      ...
+      
+      // Add event listener to detect new news
+      document.addEventListener('productAdded', function() {
+          // Refresh data without page reload
+          fetchNewsFromServer();
+      });
+      </script>
+    ```
+12. Menambahkan `strip_tags` untuk membersihkan data baru di fungsi `add_product_entry_ajax()` di `views.py`
+    ```python
+      @csrf_exempt
+      @require_POST
+      def add_product_entry_ajax(request):
+          name = strip_tags(request.POST.get("name"))  
+          description = strip_tags(request.POST.get("description"))
+    ....
+    ```
+13. Menambahkan DOMPurify di `base.html`
+    ```html
+      {% load static %}
+      <!DOCTYPE html>
+      <html lang="en">
+        <head>
+          ...
+          <script src="https://cdn.tailwindcss.com"></script>
+          <!-- Add DOMPurify here -->
+          <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.5/dist/purify.min.js"></script>
+          <link rel="stylesheet" href="{% static 'css/global.css' %}"/>
+        </head>
+        ...
+      </html>
+    ```
+
+## Tugas 6 (Pertanyaan)
+**1.  Apa perbedaan antara synchronous request dan asynchronous request?**
+
+Synchronous request berarti browser akan berhenti total untuk menunggu umpan balik atau respons dari server sebelum mengeksekus ikode atau interaksi dari pengguna. Sedangkan untuk asynchronous request berarti browser bisa terus jalan tanpa menunggu adanya respons sehingga UI masih tetap responsif 
+
+**2. Bagaimana AJAX bekerja di Django (alur ruquest response)?**
+
+Klien atau konteks di sini adalah browser, JS akan membuat objek atau menggunakan API untuk melakukan pengiriman HTTP ke suatu endpoint Django. Lalu server akan memproses rqeuest melalui view tanpa merender keseluruhan template HTML dan juga mengambil data dari database. Setelah itu akan diberikan respons dimana view mengembalikan data yang di program ini menggunakan JSON. Terakhir klien akan menerima kembali respons JSON dan halaman bisa diupdate.
+
+**3. Apa keuntungan menggunakan AJAX dibandingkan render biasa di Django>**
+
+Keuntungan menggunakan AJAX adalah di bagian user expereience dan juga bandwith karena jika menggunakan AJAX, hanya bagian tertentu yang memang diperlukan yang dilakukan pengolahannya. Sehingga tidak perlu mentransfer keseluruhan HTML dan dapat mengurangi kecepatan waktu pemrosesan.
+
+**4. Bagaimana cara memastikan keamanan saat menggunakan AJAX untuk fitur login dan register di Django?**
+
+Kita dapat memanfaatkan penggunakan CSRF token dan juga HTTPS. Setiap request POST AJAX akan selalu menyertakan CSRF sehingga saat diproses, Django akan menerimanya. Juga, penggunaan HTTPS dapat membantu mengenkripsi data sensitf saat proses transfer data sehingga mengurangi peluang adanya penyalahgunaan
+
+**5. Bagaimana AJAX mempengaruhi pengalaman pengguna (User Experience) pada website?**
+
+Dari User Experience (UX), AJAX paling berperan dengan membuat aplikasi web menjadi lebih cepat dan interaktif karena respons yang dibuatnya instan. Aplikasi web juga menjadi lebih dinamis untuk pengupdateannya karena diperbarui secara real time tanpa harus reload setiap ada perubahan.
+

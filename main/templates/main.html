@@ -18,8 +18,11 @@
 
     <!-- Button to open modal -->
         <button onclick="showModal()" class="inline-flex items-center px-4 py-2 bg-white text-green-600 font-semibold outline outline-2 outline-green-600 outline-offset-[-2px] rounded-md hover:bg-green-600 hover:text-white transition-colors mb-4">
-            Create Product by AJAX
+            A
         </button>
+
+        <button id="sort">Sort</button>
+
 
     <!-- Filter Section -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 bg-[#FDFBF7] rounded-lg border border-[#D6CFC7] p-4">
@@ -82,6 +85,7 @@ const emptyStateDisplay = document.getElementById('empty');
 const productGridContainer = document.getElementById('grid');
 const showAllProductButton = document.getElementById('filter-all');
 const showMyProductButton = document.getElementById('filter-my');
+const sortButton = document.getElementById('sort');
 
 let activeFilter = 'all';
 let allProductData = [];
@@ -227,6 +231,8 @@ document.addEventListener('productAdded', function() {
     // Refresh data without page reload
     fetchProductFromServer();
 });
+
+
 
 </script>
 {% endblock content %}
